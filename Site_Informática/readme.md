@@ -1,7 +1,7 @@
-# ATIVIDADE DE CRIAÇÃO DE SITE USANDO METODOLOGIAS DE COMPUTAÇÃO EM NUVEM
+## Atividade de criação de site usando metodologia de computação em nuvem.
 
-## ESTA PASTA INCLUI:
+### Esta pasta inclui:
 
-### PLANEJAMENTO DO SITE (ANEXADO EM PDF)
+<span style=color: green> Planejamento (Anexado em PDF) <span style=color: green>
 
-### SITE (EM ANDAMENTO)  
+<span style=color: red> SITE (Em andamento)  <span style=color: red:>
