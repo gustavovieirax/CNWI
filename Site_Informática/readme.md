@@ -1,7 +1,10 @@
 ## Atividade de criação de site usando metodologia de computação em nuvem.
 
+Aluno: Gustavo Vieira Série: 2°F
+
 ### Esta pasta inclui:
 
-<span style=color: green> Planejamento (Anexado em PDF) <span style=color: green>
+Planejamento (Anexado em PDF)
 
-<span style=color: red> SITE (Em andamento)  <span style=color: red:>
+Site (Em andamento)  <span style=color: red:>
+
