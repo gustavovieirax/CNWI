@@ -4,4 +4,4 @@
 
 ### Gustavo Vieira Lima 
 
-![Logo Aranha](aranhadoreame.png)
+<img src="aranhadoreadme.png" alt="Logo Aranha" width="200">
