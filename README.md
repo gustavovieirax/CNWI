@@ -4,4 +4,4 @@
 
 ### Gustavo Vieira Lima 
 
-<img src="aranhadoreadme.png" alt="Logo Aranha" width="200">
+<img src="aranhadoreadme.png" alt="Logo Aranha" width="600">
