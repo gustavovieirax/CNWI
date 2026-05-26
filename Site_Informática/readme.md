@@ -6,5 +6,5 @@ Aluno: Gustavo Vieira Série: 2°F
 
 Planejamento (Anexado em PDF)
 
-Site (Em andamento)  <span style=color: red:>
+Site (Finalizado), hospedado em: https://informaticamcm.netlify.app/  <span style=color: red:>
 
