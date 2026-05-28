@@ -1,7 +1,12 @@
  # COMPUTAÇÃO PARA WEB
 
-### Ministrado pela Professora Edilma Bindá no ano de 2026.
+  Este repositório está organizado de acordo com as demandas propostas nas aulas, com projetos práticos e conteúdos solicitados pela professora em sala de aula, sendo elas, respectivamente:
 
-### Gustavo Vieira Lima 
+       ATV 01 - /Site_Informática - (Conceitos de Hospedagem)
 
-<img src="aranhadoreadme.png" alt="Logo Aranha" width="600">
+
+
+<img width="498" height="406" alt="image" src="https://github.com/user-attachments/assets/0a6bfc0f-8f63-412c-b701-afed704b3272" />
+
+Gustavo Vieira Lima 
+Ministrado pela Professora Edilma Bindá no ano de 2026.
