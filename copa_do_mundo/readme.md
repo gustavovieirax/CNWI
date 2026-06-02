@@ -1,4 +1,4 @@
-    Copa do Mundo 2026 ⚽
+# Copa do Mundo 2026 ⚽
 
    Repositório destinado ao desenvolvimento de um site interativo com placar e cálculos, usando metodologia de dev. web.
 
