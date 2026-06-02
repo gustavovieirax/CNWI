@@ -1,0 +1,318 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Simulador Mata-Mata - Copa do Mundo</title>
+<style>
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #ebd407;
+    background-image: url('brasilbandeira.png'), linear-gradient(135deg, #0b0c10 0%, #1a1a2e 100%);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    color: #fff;
+    margin: 0;
+    padding: 20px;
+    min-height: 100vh;
+  }
+  h1 {
+    text-align: center;
+    color: #e50914;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+  }
+  .instrucoes {
+    text-align: center;
+    color: #a9a9a9;
+    margin-bottom: 30px;
+  }
+  .bracket-container {
+    display: flex;
+    gap: 40px;
+    overflow-x: auto;
+    padding: 20px;
+    justify-content: flex-start;
+    align-items: stretch;
+  }
+  .round {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    gap: 20px;
+  }
+  .round-title {
+    text-align: center;
+    color: #66fcf1;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+    font-size: 16px;
+    font-weight: bold;
+  }
+  .match {
+    background-color: #0cbe5c;
+    border: 2px solid #991b88;
+    border-radius: 8px;
+    width: 220px;
+    padding: 10px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.5);
+  }
+  .team-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+  }
+  .team-row:first-child {
+    border-bottom: 1px solid #0f3460;
+  }
+  .team-name {
+    font-weight: bold;
+    font-size: 14px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .score-input {
+    width: 40px;
+    padding: 4px;
+    text-align: center;
+    background-color: #000;
+    color: #fff;
+    border: 1px solid #e50914;
+    border-radius: 4px;
+    font-weight: bold;
+  }
+  .score-input:focus {
+    outline: none;
+    border-color: #66fcf1;
+  }
+  .champion-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+  .champion-box {
+    background-color: #d4af37;
+    color: #000;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    font-size: 1.5rem;
+    font-weight: bold;
+    box-shadow: 0 0 20px #d4af37;
+    min-width: 200px;
+    min-height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+</style>
+</head>
+<body>
+
+  <h1>Simulador da Fase Final</h1>
+  <p class="instrucoes"> Digite o placar nos campos numéricos. Quem fizer mais gols avança automaticamente.<br>Em caso de empate, simule os pênaltis adicionando 1 gol ao vencedor no placar final.</p>
+
+
+  <img src="brasilbandeira.png" alt="Brasil" style="width: 100px; height: auto;">
+  <div class="bracket-container">
+    
+    <div class="round">
+      <div class="round-title">Oitavas de Final</div>
+      
+      <div class="match" id="m1">
+        <div class="team-row"><span class="team-name" id="team-m1-a">BRASIL</span> <input type="number" min="0" class="score-input" id="score-m1-a"></div>
+        <div class="team-row"><span class="team-name" id="team-m1-b">URUGUAI</span> <input type="number" min="0" class="score-input" id="score-m1-b"></div>
+      </div>
+      <div class="match" id="m2">
+        <div class="team-row"><span class="team-name" id="team-m2-a">ESPANHA</span> <input type="number" min="0" class="score-input" id="score-m2-a"></div>
+        <div class="team-row"><span class="team-name" id="team-m2-b">CROÁCIA</span> <input type="number" min="0" class="score-input" id="score-m2-b"></div>
+      </div>
+      <div class="match" id="m3">
+        <div class="team-row"><span class="team-name" id="team-m3-a">FRANÇA</span> <input type="number" min="0" class="score-input" id="score-m3-a"></div>
+        <div class="team-row"><span class="team-name" id="team-m3-b">COLÔMBIA</span> <input type="number" min="0" class="score-input" id="score-m3-b"></div>
+      </div>
+      <div class="match" id="m4">
+        <div class="team-row"><span class="team-name" id="team-m4-a">INGLATERRA</span> <input type="number" min="0" class="score-input" id="score-m4-a"></div>
+        <div class="team-row"><span class="team-name" id="team-m4-b">SENEGAL</span> <input type="number" min="0" class="score-input" id="score-m4-b"></div>
+      </div>
+      <div class="match" id="m5">
+        <div class="team-row"><span class="team-name" id="team-m5-a">ARGENTINA</span> <input type="number" min="0" class="score-input" id="score-m5-a"></div>
+        <div class="team-row"><span class="team-name" id="team-m5-b">MÉXICO</span> <input type="number" min="0" class="score-input" id="score-m5-b"></div>
+      </div>
+      <div class="match" id="m6">
+        <div class="team-row"><span class="team-name" id="team-m6-a">ALEMANHA</span> <input type="number" min="0" class="score-input" id="score-m6-a"></div>
+        <div class="team-row"><span class="team-name" id="team-m6-b">JAPÃO</span> <input type="number" min="0" class="score-input" id="score-m6-b"></div>
+      </div>
+      <div class="match" id="m7">
+        <div class="team-row"><span class="team-name" id="team-m7-a">PORTUGAL</span> <input type="number" min="0" class="score-input" id="score-m7-a"></div>
+        <div class="team-row"><span class="team-name" id="team-m7-b">MARROCOS</span> <input type="number" min="0" class="score-input" id="score-m7-b"></div>
+      </div>
+      <div class="match" id="m8">
+        <div class="team-row"><span class="team-name" id="team-m8-a">HOLANDA</span> <input type="number" min="0" class="score-input" id="score-m8-a"></div>
+        <div class="team-row"><span class="team-name" id="team-m8-b">EUA</span> <input type="number" min="0" class="score-input" id="score-m8-b"></div>
+      </div>
+    </div>
+
+    <div class="round">
+      <div class="round-title">Quartas de Final</div>
+      
+      <div class="match" id="qf1">
+        <div class="team-row"><span class="team-name" id="team-qf1-a">Aguardando...</span> <input type="number" min="0" class="score-input" id="score-qf1-a" disabled></div>
+        <div class="team-row"><span class="team-name" id="team-qf1-b">Aguardando...</span> <input type="number" min="0" class="score-input" id="score-qf1-b" disabled></div>
+      </div>
+      <div class="match" id="qf2">
+        <div class="team-row"><span class="team-name" id="team-qf2-a">Aguardando...</span> <input type="number" min="0" class="score-input" id="score-qf2-a" disabled></div>
+        <div class="team-row"><span class="team-name" id="team-qf2-b">Aguardando...</span> <input type="number" min="0" class="score-input" id="score-qf2-b" disabled></div>
+      </div>
+      <div class="match" id="qf3">
+        <div class="team-row"><span class="team-name" id="team-qf3-a">Aguardando...</span> <input type="number" min="0" class="score-input" id="score-qf3-a" disabled></div>
+        <div class="team-row"><span class="team-name" id="team-qf3-b">Aguardando...</span> <input type="number" min="0" class="score-input" id="score-qf3-b" disabled></div>
+      </div>
+      <div class="match" id="qf4">
+        <div class="team-row"><span class="team-name" id="team-qf4-a">Aguardando...</span> <input type="number" min="0" class="score-input" id="score-qf4-a" disabled></div>
+        <div class="team-row"><span class="team-name" id="team-qf4-b">Aguardando...</span> <input type="number" min="0" class="score-input" id="score-qf4-b" disabled></div>
+      </div>
+    </div>
+
+    <div class="round">
+      <div class="round-title">Semifinal</div>
+      
+      <div class="match" id="sf1">
+        <div class="team-row"><span class="team-name" id="team-sf1-a">Aguardando...</span> <input type="number" min="0" class="score-input" id="score-sf1-a" disabled></div>
+        <div class="team-row"><span class="team-name" id="team-sf1-b">Aguardando...</span> <input type="number" min="0" class="score-input" id="score-sf1-b" disabled></div>
+      </div>
+      <div class="match" id="sf2">
+        <div class="team-row"><span class="team-name" id="team-sf2-a">Aguardando...</span> <input type="number" min="0" class="score-input" id="score-sf2-a" disabled></div>
+        <div class="team-row"><span class="team-name" id="team-sf2-b">Aguardando...</span> <input type="number" min="0" class="score-input" id="score-sf2-b" disabled></div>
+      </div>
+    </div>
+
+    <div class="round">
+      <div class="round-title">Final</div>
+      
+      <div class="match" id="final1">
+        <div class="team-row"><span class="team-name" id="team-final1-a">Aguardando...</span> <input type="number" min="0" class="score-input" id="score-final1-a" disabled></div>
+        <div class="team-row"><span class="team-name" id="team-final1-b">Aguardando...</span> <input type="number" min="0" class="score-input" id="score-final1-b" disabled></div>
+      </div>
+    </div>
+
+    <div class="round champion-container">
+      <div class="round-title" style="color: #d4af37;">Campeão</div>
+      <div class="champion-box" id="champion">
+        🏆 ?
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    // Adiciona evento de "input" a todos os campos numéricos para atualizar em tempo real
+    document.querySelectorAll('.score-input').forEach(input => {
+      input.addEventListener('input', updateAllMatches);
+    });
+
+    function evaluateMatch(matchId, nextMatchId, nextSlot) {
+      const scoreA_el = document.getElementById(`score-${matchId}-a`);
+      const scoreB_el = document.getElementById(`score-${matchId}-b`);
+      
+      const valA = scoreA_el.value;
+      const valB = scoreB_el.value;
+      const teamA = document.getElementById(`team-${matchId}-a`).innerText;
+      const teamB = document.getElementById(`team-${matchId}-b`).innerText;
+      
+      const nextTeamEl = document.getElementById(`team-${nextMatchId}-${nextSlot}`);
+      const nextInputEl = document.getElementById(`score-${nextMatchId}-${nextSlot}`);
+
+      // Verifica se a partida atual já recebeu as duas seleções corretamente
+      if (teamA === "Aguardando..." || teamA === "Desempate!" || teamB === "Aguardando..." || teamB === "Desempate!") {
+          nextTeamEl.innerText = "Aguardando...";
+          nextInputEl.disabled = true;
+          nextInputEl.value = '';
+          return;
+      }
+
+      if (valA !== '' && valB !== '') {
+        const numA = parseInt(valA);
+        const numB = parseInt(valB);
+
+        if (numA > numB) {
+          nextTeamEl.innerText = teamA;
+          nextInputEl.disabled = false;
+        } else if (numB > numA) {
+          nextTeamEl.innerText = teamB;
+          nextInputEl.disabled = false;
+        } else {
+          nextTeamEl.innerText = "Desempate!";
+          nextInputEl.disabled = true;
+          nextInputEl.value = '';
+        }
+      } else {
+        nextTeamEl.innerText = "Aguardando...";
+        nextInputEl.disabled = true;
+        nextInputEl.value = '';
+      }
+    }
+
+    function evaluateChampion() {
+      const valA = document.getElementById('score-final1-a').value;
+      const valB = document.getElementById('score-final1-b').value;
+      const teamA = document.getElementById('team-final1-a').innerText;
+      const teamB = document.getElementById('team-final1-b').innerText;
+      
+      const championEl = document.getElementById('champion');
+
+      if (teamA === "Aguardando..." || teamA === "Desempate!" || teamB === "Aguardando..." || teamB === "Desempate!") {
+          championEl.innerText = "🏆 ?";
+          return;
+      }
+
+      if (valA !== '' && valB !== '') {
+        const numA = parseInt(valA);
+        const numB = parseInt(valB);
+
+        if (numA > numB) {
+          championEl.innerText = `🏆 ${teamA}`;
+        } else if (numB > numA) {
+          championEl.innerText = `🏆 ${teamB}`;
+        } else {
+          championEl.innerText = "Desempate!";
+        }
+      } else {
+        championEl.innerText = "🏆 ?";
+      }
+    }
+
+    function updateAllMatches() {
+      // Oitavas -> Quartas
+      evaluateMatch('m1', 'qf1', 'a');
+      evaluateMatch('m2', 'qf1', 'b');
+      evaluateMatch('m3', 'qf2', 'a');
+      evaluateMatch('m4', 'qf2', 'b');
+      evaluateMatch('m5', 'qf3', 'a');
+      evaluateMatch('m6', 'qf3', 'b');
+      evaluateMatch('m7', 'qf4', 'a');
+      evaluateMatch('m8', 'qf4', 'b');
+
+      // Quartas -> Semis
+      evaluateMatch('qf1', 'sf1', 'a');
+      evaluateMatch('qf2', 'sf1', 'b');
+      evaluateMatch('qf3', 'sf2', 'a');
+      evaluateMatch('qf4', 'sf2', 'b');
+
+      // Semis -> Final
+      evaluateMatch('sf1', 'final1', 'a');
+      evaluateMatch('sf2', 'final1', 'b');
+
+      // Define Campeão
+      evaluateChampion();
+    }
+  </script>
+</body>
+</html>
+
+```
