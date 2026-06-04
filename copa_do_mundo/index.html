@@ -1,208 +1,652 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Simulador Mata-Mata - Copa do Mundo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 <style>
+  :root {
+    --verde-br: #009b3a;
+    --amarelo-br: #fedf00;
+    --azul-br: #002776;
+    --bg-color: #f0f4f8;
+    --card-bg: #ffffff;
+    --text-color: #333333;
+    --border-color: #e2e8f0;
+  }
+
   body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #ebd407;
-    background-image: url('brasilbandeira.png'), linear-gradient(135deg, #0b0c10 0%, #1a1a2e 100%);
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    color: #fff;
+    font-family: 'Poppins', sans-serif;
+    background-color: var(--bg-color);
+    background-image: radial-gradient(circle at top right, rgba(254, 223, 0, 0.1), transparent 40%),
+                      radial-gradient(circle at bottom left, rgba(0, 155, 58, 0.1), transparent 40%);
+    color: var(--text-color);
     margin: 0;
-    padding: 20px;
+    padding: 30px 20px;
     min-height: 100vh;
   }
-  h1 {
-    text-align: center;
-    color: #e50914;
-    text-transform: uppercase;
-    letter-spacing: 2px;
+
+  .page-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    flex-wrap: wrap;
+    margin-bottom: 10px;
   }
+
+  .page-logo {
+    width: 56px;
+    height: auto;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.12);
+  }
+
+  h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    text-align: center;
+    color: var(--verde-br);
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    font-weight: 400;
+    font-size: 3rem;
+    margin: 0;
+    text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.12);
+  }
+
   .instrucoes {
     text-align: center;
-    color: #a9a9a9;
+    color: #475569;
     margin-bottom: 30px;
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
   }
+
+  .progress-wrapper {
+    max-width: 800px;
+    margin: 0 auto 40px auto;
+    text-align: center;
+  }
+
+  .progress-title {
+    font-weight: 600;
+    color: var(--azul-br);
+    margin-bottom: 10px;
+    font-size: 16px;
+  }
+
+  .progress-container {
+    background-color: #e2e8f0;
+    border-radius: 20px;
+    height: 30px;
+    width: 100%;
+    overflow: hidden;
+    position: relative;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+  }
+
+  .progress-bar {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, var(--verde-br), var(--amarelo-br));
+    transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding-right: 15px;
+  }
+
+  .progress-text {
+    position: absolute;
+    width: 100%;
+    text-align: center;
+    top: 50%;
+    transform: translateY(-50%);
+    font-weight: 600;
+    color: #fff;
+    font-size: 13px;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.6);
+    z-index: 2;
+    pointer-events: none;
+  }
+
   .bracket-container {
     display: flex;
-    gap: 40px;
     overflow-x: auto;
-    padding: 20px;
-    justify-content: flex-start;
+    padding: 10px 20px 40px;
     align-items: stretch;
+    min-height: 800px;
   }
+
+  .bracket-container::-webkit-scrollbar {
+    height: 10px;
+  }
+  
+  .bracket-container::-webkit-scrollbar-track {
+    background: #e2e8f0;
+    border-radius: 5px;
+  }
+  
+  .bracket-container::-webkit-scrollbar-thumb {
+    background: var(--verde-br);
+    border-radius: 5px;
+  }
+
   .round {
     display: flex;
     flex-direction: column;
-    justify-content: space-around;
-    gap: 20px;
+    min-width: 280px;
+    padding-right: 50px;
+    position: relative;
   }
+
+  .round:last-child {
+    padding-right: 0;
+  }
+
   .round-title {
     text-align: center;
-    color: #66fcf1;
-    margin-bottom: 10px;
+    color: var(--azul-br);
+    margin-bottom: 15px;
     text-transform: uppercase;
-    font-size: 16px;
-    font-weight: bold;
-  }
-  .match {
-    background-color: #0cbe5c;
-    border: 2px solid #991b88;
+    font-size: 15px;
+    font-weight: 800;
+    background: #fff;
+    padding: 8px;
     border-radius: 8px;
-    width: 220px;
-    padding: 10px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.5);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    z-index: 2;
   }
+
+  .round-matches {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+  }
+
+  .match-pair {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    flex: 1;
+    position: relative;
+  }
+
+  .match-pair::after {
+    content: '';
+    position: absolute;
+    right: -25px;
+    top: 25%;
+    bottom: 25%;
+    border-right: 3px solid var(--verde-br);
+    border-top: 3px solid var(--verde-br);
+    border-bottom: 3px solid var(--verde-br);
+    border-radius: 0 6px 6px 0;
+    z-index: 1;
+  }
+
+  .match-pair::before {
+    content: '';
+    position: absolute;
+    right: -50px;
+    top: 50%;
+    width: 25px;
+    height: 3px;
+    background-color: var(--verde-br);
+    z-index: 1;
+  }
+
+  .final-match-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    flex: 1;
+    position: relative;
+  }
+
+  .final-match-container::after {
+    content: '';
+    position: absolute;
+    right: -50px;
+    top: 50%;
+    width: 50px;
+    height: 3px;
+    background-color: var(--verde-br);
+    z-index: 1;
+  }
+
+  .match {
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-left: 5px solid var(--verde-br);
+    border-radius: 12px;
+    padding: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    position: relative;
+    z-index: 2;
+  }
+
   .team-row {
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 8px 0;
   }
+
   .team-row:first-child {
-    border-bottom: 1px solid #0f3460;
+    border-bottom: 1px solid #f1f5f9;
+    margin-bottom: 4px;
+    padding-bottom: 12px;
   }
+
+  .team-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex: 1;
+    overflow: hidden;
+  }
+
+  .team-flag {
+    width: 32px;
+    height: 32px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 2px solid var(--verde-br);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+  }
+
   .team-name {
-    font-weight: bold;
+    font-weight: 600;
     font-size: 14px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
   }
+
   .score-input {
-    width: 40px;
-    padding: 4px;
+    width: 55px; /* Aumentado para caber o botão nativo de subir/descer */
+    height: 34px;
     text-align: center;
-    background-color: #000;
-    color: #fff;
-    border: 1px solid #e50914;
-    border-radius: 4px;
-    font-weight: bold;
+    background-color: #f8fafc;
+    color: var(--text-color);
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 16px;
+    font-family: 'Poppins', sans-serif;
+    transition: all 0.2s ease;
   }
+
   .score-input:focus {
     outline: none;
-    border-color: #66fcf1;
+    border-color: var(--verde-br);
+    background-color: #fff;
+    box-shadow: 0 0 0 3px rgba(0, 155, 58, 0.2);
   }
+
+  .score-input:disabled {
+    background-color: #e2e8f0;
+    color: #94a3b8;
+    cursor: not-allowed;
+  }
+
   .champion-container {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
   }
+
   .champion-box {
-    background-color: #d4af37;
-    color: #000;
-    padding: 20px;
-    border-radius: 10px;
+    background: linear-gradient(135deg, var(--amarelo-br), #f59e0b);
+    color: var(--azul-br);
+    padding: 25px 30px;
+    border-radius: 16px;
     text-align: center;
-    font-size: 1.5rem;
-    font-weight: bold;
-    box-shadow: 0 0 20px #d4af37;
-    min-width: 200px;
-    min-height: 50px;
+    font-size: 1.8rem;
+    font-weight: 800;
+    box-shadow: 0 10px 25px rgba(254, 223, 0, 0.4);
+    min-width: 220px;
+    min-height: 60px;
     display: flex;
     align-items: center;
     justify-content: center;
+    border: 2px solid #fff;
+    z-index: 2;
   }
+
+  @media (max-width: 860px) {
+    body {
+      padding: 20px 12px;
+    }
+
+    .progress-wrapper {
+      padding: 0 10px;
+    }
+
+    .bracket-container {
+      flex-direction: column;
+      padding-bottom: 20px;
+      min-height: auto;
+    }
+
+    .round {
+      min-width: auto;
+      width: 100%;
+      padding-right: 0;
+      margin-bottom: 24px;
+    }
+
+    .round:last-child {
+      margin-bottom: 0;
+    }
+
+    .round-title {
+      font-size: 1rem;
+      margin-bottom: 12px;
+      padding: 10px 12px;
+    }
+
+    .match-pair {
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .match-pair::after,
+    .match-pair::before,
+    .final-match-container::after {
+      display: none;
+    }
+
+    .match {
+      width: 100%;
+      margin-bottom: 0;
+    }
+
+    .team-row {
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .team-info {
+      gap: 10px;
+    }
+
+    .team-name {
+      font-size: 13px;
+    }
+
+    .score-input {
+      width: 48px;
+    }
+
+    .champion-box {
+      min-width: auto;
+      width: 100%;
+      padding: 22px 20px;
+      font-size: 1.5rem;
+    }
+  }
+
+  @media (max-width: 520px) {
+    h1 {
+      font-size: 2.3rem;
+    }
+
+    .instrucoes {
+      font-size: 13px;
+      line-height: 1.4;
+    }
+
+    .score-input {
+      width: 100%;
+      max-width: 80px;
+    }
+
+    .team-row {
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+
+    .team-info {
+      flex: 1 1 100%;
+    }
+
+    .match {
+      padding: 14px;
+    }
+  }
+
 </style>
 </head>
 <body>
 
-  <h1>Simulador da Fase Final</h1>
-  <p class="instrucoes"> Digite o placar nos campos numéricos. Quem fizer mais gols avança automaticamente.<br>Em caso de empate, simule os pênaltis adicionando 1 gol ao vencedor no placar final.</p>
+  <div class="page-header">
+    <img src="cbf.webp" alt="CBF" class="page-logo">
+    <h1>Simulador da Copa</h1>
+    <img src="etecmcm.png" alt="ETEC MCM" class="page-logo">
+  </div>
+  <p class="instrucoes">Digite o placar nos campos numéricos ou use as setinhas. Quem fizer mais gols avança automaticamente.<br>Em caso de empate, adicione 1 gol ao vencedor no placar final simulando os pênaltis.</p>
 
+  <div class="progress-wrapper">
+    <div class="progress-title">⚽ Caminho do Brasil para o Hexa</div>
+    <div class="progress-container">
+      <div class="progress-bar" id="brazil-progress-bar"></div>
+      <div class="progress-text" id="brazil-progress-text">Oitavas de Final (0%)</div>
+    </div>
+  </div>
 
-  <img src="brasilbandeira.png" alt="Brasil" style="width: 100px; height: auto;">
   <div class="bracket-container">
     
     <div class="round">
       <div class="round-title">Oitavas de Final</div>
-      
-      <div class="match" id="m1">
-        <div class="team-row"><span class="team-name" id="team-m1-a">BRASIL</span> <input type="number" min="0" class="score-input" id="score-m1-a"></div>
-        <div class="team-row"><span class="team-name" id="team-m1-b">URUGUAI</span> <input type="number" min="0" class="score-input" id="score-m1-b"></div>
-      </div>
-      <div class="match" id="m2">
-        <div class="team-row"><span class="team-name" id="team-m2-a">ESPANHA</span> <input type="number" min="0" class="score-input" id="score-m2-a"></div>
-        <div class="team-row"><span class="team-name" id="team-m2-b">CROÁCIA</span> <input type="number" min="0" class="score-input" id="score-m2-b"></div>
-      </div>
-      <div class="match" id="m3">
-        <div class="team-row"><span class="team-name" id="team-m3-a">FRANÇA</span> <input type="number" min="0" class="score-input" id="score-m3-a"></div>
-        <div class="team-row"><span class="team-name" id="team-m3-b">COLÔMBIA</span> <input type="number" min="0" class="score-input" id="score-m3-b"></div>
-      </div>
-      <div class="match" id="m4">
-        <div class="team-row"><span class="team-name" id="team-m4-a">INGLATERRA</span> <input type="number" min="0" class="score-input" id="score-m4-a"></div>
-        <div class="team-row"><span class="team-name" id="team-m4-b">SENEGAL</span> <input type="number" min="0" class="score-input" id="score-m4-b"></div>
-      </div>
-      <div class="match" id="m5">
-        <div class="team-row"><span class="team-name" id="team-m5-a">ARGENTINA</span> <input type="number" min="0" class="score-input" id="score-m5-a"></div>
-        <div class="team-row"><span class="team-name" id="team-m5-b">MÉXICO</span> <input type="number" min="0" class="score-input" id="score-m5-b"></div>
-      </div>
-      <div class="match" id="m6">
-        <div class="team-row"><span class="team-name" id="team-m6-a">ALEMANHA</span> <input type="number" min="0" class="score-input" id="score-m6-a"></div>
-        <div class="team-row"><span class="team-name" id="team-m6-b">JAPÃO</span> <input type="number" min="0" class="score-input" id="score-m6-b"></div>
-      </div>
-      <div class="match" id="m7">
-        <div class="team-row"><span class="team-name" id="team-m7-a">PORTUGAL</span> <input type="number" min="0" class="score-input" id="score-m7-a"></div>
-        <div class="team-row"><span class="team-name" id="team-m7-b">MARROCOS</span> <input type="number" min="0" class="score-input" id="score-m7-b"></div>
-      </div>
-      <div class="match" id="m8">
-        <div class="team-row"><span class="team-name" id="team-m8-a">HOLANDA</span> <input type="number" min="0" class="score-input" id="score-m8-a"></div>
-        <div class="team-row"><span class="team-name" id="team-m8-b">EUA</span> <input type="number" min="0" class="score-input" id="score-m8-b"></div>
+      <div class="round-matches">
+        
+        <div class="match-pair">
+          <div class="match" id="m1">
+            <div class="team-row">
+              <div class="team-info"><img src="https://flagcdn.com/w40/br.png" class="team-flag" id="flag-m1-a" alt="Bandeira"><span class="team-name" id="team-m1-a">BRASIL</span></div>
+              <input type="number" min="0" class="score-input" id="score-m1-a">
+            </div>
+            <div class="team-row">
+              <div class="team-info"><img src="https://flagcdn.com/w40/uy.png" class="team-flag" id="flag-m1-b" alt="Bandeira"><span class="team-name" id="team-m1-b">URUGUAI</span></div>
+              <input type="number" min="0" class="score-input" id="score-m1-b">
+            </div>
+          </div>
+          <div class="match" id="m2">
+            <div class="team-row">
+              <div class="team-info"><img src="https://flagcdn.com/w40/es.png" class="team-flag" id="flag-m2-a" alt="Bandeira"><span class="team-name" id="team-m2-a">ESPANHA</span></div>
+              <input type="number" min="0" class="score-input" id="score-m2-a">
+            </div>
+            <div class="team-row">
+              <div class="team-info"><img src="https://flagcdn.com/w40/hr.png" class="team-flag" id="flag-m2-b" alt="Bandeira"><span class="team-name" id="team-m2-b">CROÁCIA</span></div>
+              <input type="number" min="0" class="score-input" id="score-m2-b">
+            </div>
+          </div>
+        </div>
+
+        <div class="match-pair">
+          <div class="match" id="m3">
+            <div class="team-row">
+              <div class="team-info"><img src="https://flagcdn.com/w40/fr.png" class="team-flag" id="flag-m3-a" alt="Bandeira"><span class="team-name" id="team-m3-a">FRANÇA</span></div>
+              <input type="number" min="0" class="score-input" id="score-m3-a">
+            </div>
+            <div class="team-row">
+              <div class="team-info"><img src="https://flagcdn.com/w40/co.png" class="team-flag" id="flag-m3-b" alt="Bandeira"><span class="team-name" id="team-m3-b">COLÔMBIA</span></div>
+              <input type="number" min="0" class="score-input" id="score-m3-b">
+            </div>
+          </div>
+          <div class="match" id="m4">
+            <div class="team-row">
+              <div class="team-info"><img src="https://flagcdn.com/w40/gb-eng.png" class="team-flag" id="flag-m4-a" alt="Bandeira"><span class="team-name" id="team-m4-a">INGLATERRA</span></div>
+              <input type="number" min="0" class="score-input" id="score-m4-a">
+            </div>
+            <div class="team-row">
+              <div class="team-info"><img src="https://flagcdn.com/w40/sn.png" class="team-flag" id="flag-m4-b" alt="Bandeira"><span class="team-name" id="team-m4-b">SENEGAL</span></div>
+              <input type="number" min="0" class="score-input" id="score-m4-b">
+            </div>
+          </div>
+        </div>
+
+        <div class="match-pair">
+          <div class="match" id="m5">
+            <div class="team-row">
+              <div class="team-info"><img src="https://flagcdn.com/w40/ar.png" class="team-flag" id="flag-m5-a" alt="Bandeira"><span class="team-name" id="team-m5-a">ARGENTINA</span></div>
+              <input type="number" min="0" class="score-input" id="score-m5-a">
+            </div>
+            <div class="team-row">
+              <div class="team-info"><img src="https://flagcdn.com/w40/mx.png" class="team-flag" id="flag-m5-b" alt="Bandeira"><span class="team-name" id="team-m5-b">MÉXICO</span></div>
+              <input type="number" min="0" class="score-input" id="score-m5-b">
+            </div>
+          </div>
+          <div class="match" id="m6">
+            <div class="team-row">
+              <div class="team-info"><img src="https://flagcdn.com/w40/de.png" class="team-flag" id="flag-m6-a" alt="Bandeira"><span class="team-name" id="team-m6-a">ALEMANHA</span></div>
+              <input type="number" min="0" class="score-input" id="score-m6-a">
+            </div>
+            <div class="team-row">
+              <div class="team-info"><img src="https://flagcdn.com/w40/jp.png" class="team-flag" id="flag-m6-b" alt="Bandeira"><span class="team-name" id="team-m6-b">JAPÃO</span></div>
+              <input type="number" min="0" class="score-input" id="score-m6-b">
+            </div>
+          </div>
+        </div>
+
+        <div class="match-pair">
+          <div class="match" id="m7">
+            <div class="team-row">
+              <div class="team-info"><img src="https://flagcdn.com/w40/pt.png" class="team-flag" id="flag-m7-a" alt="Bandeira"><span class="team-name" id="team-m7-a">PORTUGAL</span></div>
+              <input type="number" min="0" class="score-input" id="score-m7-a">
+            </div>
+            <div class="team-row">
+              <div class="team-info"><img src="https://flagcdn.com/w40/ma.png" class="team-flag" id="flag-m7-b" alt="Bandeira"><span class="team-name" id="team-m7-b">MARROCOS</span></div>
+              <input type="number" min="0" class="score-input" id="score-m7-b">
+            </div>
+          </div>
+          <div class="match" id="m8">
+            <div class="team-row">
+              <div class="team-info"><img src="https://flagcdn.com/w40/nl.png" class="team-flag" id="flag-m8-a" alt="Bandeira"><span class="team-name" id="team-m8-a">HOLANDA</span></div>
+              <input type="number" min="0" class="score-input" id="score-m8-a">
+            </div>
+            <div class="team-row">
+              <div class="team-info"><img src="https://flagcdn.com/w40/us.png" class="team-flag" id="flag-m8-b" alt="Bandeira"><span class="team-name" id="team-m8-b">EUA</span></div>
+              <input type="number" min="0" class="score-input" id="score-m8-b">
+            </div>
+          </div>
+        </div>
+
       </div>
     </div>
 
     <div class="round">
       <div class="round-title">Quartas de Final</div>
-      
-      <div class="match" id="qf1">
-        <div class="team-row"><span class="team-name" id="team-qf1-a">Aguardando...</span> <input type="number" min="0" class="score-input" id="score-qf1-a" disabled></div>
-        <div class="team-row"><span class="team-name" id="team-qf1-b">Aguardando...</span> <input type="number" min="0" class="score-input" id="score-qf1-b" disabled></div>
-      </div>
-      <div class="match" id="qf2">
-        <div class="team-row"><span class="team-name" id="team-qf2-a">Aguardando...</span> <input type="number" min="0" class="score-input" id="score-qf2-a" disabled></div>
-        <div class="team-row"><span class="team-name" id="team-qf2-b">Aguardando...</span> <input type="number" min="0" class="score-input" id="score-qf2-b" disabled></div>
-      </div>
-      <div class="match" id="qf3">
-        <div class="team-row"><span class="team-name" id="team-qf3-a">Aguardando...</span> <input type="number" min="0" class="score-input" id="score-qf3-a" disabled></div>
-        <div class="team-row"><span class="team-name" id="team-qf3-b">Aguardando...</span> <input type="number" min="0" class="score-input" id="score-qf3-b" disabled></div>
-      </div>
-      <div class="match" id="qf4">
-        <div class="team-row"><span class="team-name" id="team-qf4-a">Aguardando...</span> <input type="number" min="0" class="score-input" id="score-qf4-a" disabled></div>
-        <div class="team-row"><span class="team-name" id="team-qf4-b">Aguardando...</span> <input type="number" min="0" class="score-input" id="score-qf4-b" disabled></div>
+      <div class="round-matches">
+        
+        <div class="match-pair">
+          <div class="match" id="qf1">
+            <div class="team-row">
+              <div class="team-info"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" class="team-flag" id="flag-qf1-a" alt=""><span class="team-name" id="team-qf1-a">Aguardando...</span></div>
+              <input type="number" min="0" class="score-input" id="score-qf1-a" disabled>
+            </div>
+            <div class="team-row">
+              <div class="team-info"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" class="team-flag" id="flag-qf1-b" alt=""><span class="team-name" id="team-qf1-b">Aguardando...</span></div>
+              <input type="number" min="0" class="score-input" id="score-qf1-b" disabled>
+            </div>
+          </div>
+          <div class="match" id="qf2">
+            <div class="team-row">
+              <div class="team-info"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" class="team-flag" id="flag-qf2-a" alt=""><span class="team-name" id="team-qf2-a">Aguardando...</span></div>
+              <input type="number" min="0" class="score-input" id="score-qf2-a" disabled>
+            </div>
+            <div class="team-row">
+              <div class="team-info"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" class="team-flag" id="flag-qf2-b" alt=""><span class="team-name" id="team-qf2-b">Aguardando...</span></div>
+              <input type="number" min="0" class="score-input" id="score-qf2-b" disabled>
+            </div>
+          </div>
+        </div>
+
+        <div class="match-pair">
+          <div class="match" id="qf3">
+            <div class="team-row">
+              <div class="team-info"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" class="team-flag" id="flag-qf3-a" alt=""><span class="team-name" id="team-qf3-a">Aguardando...</span></div>
+              <input type="number" min="0" class="score-input" id="score-qf3-a" disabled>
+            </div>
+            <div class="team-row">
+              <div class="team-info"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" class="team-flag" id="flag-qf3-b" alt=""><span class="team-name" id="team-qf3-b">Aguardando...</span></div>
+              <input type="number" min="0" class="score-input" id="score-qf3-b" disabled>
+            </div>
+          </div>
+          <div class="match" id="qf4">
+            <div class="team-row">
+              <div class="team-info"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" class="team-flag" id="flag-qf4-a" alt=""><span class="team-name" id="team-qf4-a">Aguardando...</span></div>
+              <input type="number" min="0" class="score-input" id="score-qf4-a" disabled>
+            </div>
+            <div class="team-row">
+              <div class="team-info"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" class="team-flag" id="flag-qf4-b" alt=""><span class="team-name" id="team-qf4-b">Aguardando...</span></div>
+              <input type="number" min="0" class="score-input" id="score-qf4-b" disabled>
+            </div>
+          </div>
+        </div>
+
       </div>
     </div>
 
     <div class="round">
       <div class="round-title">Semifinal</div>
-      
-      <div class="match" id="sf1">
-        <div class="team-row"><span class="team-name" id="team-sf1-a">Aguardando...</span> <input type="number" min="0" class="score-input" id="score-sf1-a" disabled></div>
-        <div class="team-row"><span class="team-name" id="team-sf1-b">Aguardando...</span> <input type="number" min="0" class="score-input" id="score-sf1-b" disabled></div>
-      </div>
-      <div class="match" id="sf2">
-        <div class="team-row"><span class="team-name" id="team-sf2-a">Aguardando...</span> <input type="number" min="0" class="score-input" id="score-sf2-a" disabled></div>
-        <div class="team-row"><span class="team-name" id="team-sf2-b">Aguardando...</span> <input type="number" min="0" class="score-input" id="score-sf2-b" disabled></div>
+      <div class="round-matches">
+        
+        <div class="match-pair">
+          <div class="match" id="sf1">
+            <div class="team-row">
+              <div class="team-info"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" class="team-flag" id="flag-sf1-a" alt=""><span class="team-name" id="team-sf1-a">Aguardando...</span></div>
+              <input type="number" min="0" class="score-input" id="score-sf1-a" disabled>
+            </div>
+            <div class="team-row">
+              <div class="team-info"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" class="team-flag" id="flag-sf1-b" alt=""><span class="team-name" id="team-sf1-b">Aguardando...</span></div>
+              <input type="number" min="0" class="score-input" id="score-sf1-b" disabled>
+            </div>
+          </div>
+          <div class="match" id="sf2">
+            <div class="team-row">
+              <div class="team-info"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" class="team-flag" id="flag-sf2-a" alt=""><span class="team-name" id="team-sf2-a">Aguardando...</span></div>
+              <input type="number" min="0" class="score-input" id="score-sf2-a" disabled>
+            </div>
+            <div class="team-row">
+              <div class="team-info"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" class="team-flag" id="flag-sf2-b" alt=""><span class="team-name" id="team-sf2-b">Aguardando...</span></div>
+              <input type="number" min="0" class="score-input" id="score-sf2-b" disabled>
+            </div>
+          </div>
+        </div>
+
       </div>
     </div>
 
     <div class="round">
       <div class="round-title">Final</div>
-      
-      <div class="match" id="final1">
-        <div class="team-row"><span class="team-name" id="team-final1-a">Aguardando...</span> <input type="number" min="0" class="score-input" id="score-final1-a" disabled></div>
-        <div class="team-row"><span class="team-name" id="team-final1-b">Aguardando...</span> <input type="number" min="0" class="score-input" id="score-final1-b" disabled></div>
+      <div class="round-matches final-match-container">
+        
+        <div class="match" id="final1">
+          <div class="team-row">
+            <div class="team-info"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" class="team-flag" id="flag-final1-a" alt=""><span class="team-name" id="team-final1-a">Aguardando...</span></div>
+            <input type="number" min="0" class="score-input" id="score-final1-a" disabled>
+          </div>
+          <div class="team-row">
+            <div class="team-info"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" class="team-flag" id="flag-final1-b" alt=""><span class="team-name" id="team-final1-b">Aguardando...</span></div>
+            <input type="number" min="0" class="score-input" id="score-final1-b" disabled>
+          </div>
+        </div>
+
       </div>
     </div>
 
     <div class="round champion-container">
-      <div class="round-title" style="color: #d4af37;">Campeão</div>
+      <div class="round-title" style="color: #f59e0b;">Campeão</div>
       <div class="champion-box" id="champion">
         🏆 ?
       </div>
@@ -211,10 +655,57 @@
   </div>
 
   <script>
-    // Adiciona evento de "input" a todos os campos numéricos para atualizar em tempo real
+    const flagMap = {
+        "BRASIL": "https://flagcdn.com/w40/br.png",
+        "URUGUAI": "https://flagcdn.com/w40/uy.png",
+        "ESPANHA": "https://flagcdn.com/w40/es.png",
+        "CROÁCIA": "https://flagcdn.com/w40/hr.png",
+        "FRANÇA": "https://flagcdn.com/w40/fr.png",
+        "COLÔMBIA": "https://flagcdn.com/w40/co.png",
+        "INGLATERRA": "https://flagcdn.com/w40/gb-eng.png",
+        "SENEGAL": "https://flagcdn.com/w40/sn.png",
+        "ARGENTINA": "https://flagcdn.com/w40/ar.png",
+        "MÉXICO": "https://flagcdn.com/w40/mx.png",
+        "ALEMANHA": "https://flagcdn.com/w40/de.png",
+        "JAPÃO": "https://flagcdn.com/w40/jp.png",
+        "PORTUGAL": "https://flagcdn.com/w40/pt.png",
+        "MARROCOS": "https://flagcdn.com/w40/ma.png",
+        "HOLANDA": "https://flagcdn.com/w40/nl.png",
+        "EUA": "https://flagcdn.com/w40/us.png"
+    };
+
+    const emptyFlag = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7";
+    let lastBrazilProgress = 0;
+
     document.querySelectorAll('.score-input').forEach(input => {
       input.addEventListener('input', updateAllMatches);
     });
+
+    function dispararFogos() {
+        const duration = 3000;
+        const end = Date.now() + duration;
+
+        (function frame() {
+            confetti({
+                particleCount: 5,
+                angle: 60,
+                spread: 55,
+                origin: { x: 0 },
+                colors: ['#009b3a', '#fedf00', '#002776']
+            });
+            confetti({
+                particleCount: 5,
+                angle: 120,
+                spread: 55,
+                origin: { x: 1 },
+                colors: ['#009b3a', '#fedf00', '#002776']
+            });
+
+            if (Date.now() < end) {
+                requestAnimationFrame(frame);
+            }
+        }());
+    }
 
     function evaluateMatch(matchId, nextMatchId, nextSlot) {
       const scoreA_el = document.getElementById(`score-${matchId}-a`);
@@ -224,13 +715,16 @@
       const valB = scoreB_el.value;
       const teamA = document.getElementById(`team-${matchId}-a`).innerText;
       const teamB = document.getElementById(`team-${matchId}-b`).innerText;
+      const flagA = document.getElementById(`flag-${matchId}-a`).src;
+      const flagB = document.getElementById(`flag-${matchId}-b`).src;
       
       const nextTeamEl = document.getElementById(`team-${nextMatchId}-${nextSlot}`);
       const nextInputEl = document.getElementById(`score-${nextMatchId}-${nextSlot}`);
+      const nextFlagEl = document.getElementById(`flag-${nextMatchId}-${nextSlot}`);
 
-      // Verifica se a partida atual já recebeu as duas seleções corretamente
       if (teamA === "Aguardando..." || teamA === "Desempate!" || teamB === "Aguardando..." || teamB === "Desempate!") {
           nextTeamEl.innerText = "Aguardando...";
+          nextFlagEl.src = emptyFlag;
           nextInputEl.disabled = true;
           nextInputEl.value = '';
           return;
@@ -242,17 +736,21 @@
 
         if (numA > numB) {
           nextTeamEl.innerText = teamA;
+          nextFlagEl.src = flagA;
           nextInputEl.disabled = false;
         } else if (numB > numA) {
           nextTeamEl.innerText = teamB;
+          nextFlagEl.src = flagB;
           nextInputEl.disabled = false;
         } else {
           nextTeamEl.innerText = "Desempate!";
+          nextFlagEl.src = emptyFlag;
           nextInputEl.disabled = true;
           nextInputEl.value = '';
         }
       } else {
         nextTeamEl.innerText = "Aguardando...";
+        nextFlagEl.src = emptyFlag;
         nextInputEl.disabled = true;
         nextInputEl.value = '';
       }
@@ -276,9 +774,9 @@
         const numB = parseInt(valB);
 
         if (numA > numB) {
-          championEl.innerText = `🏆 ${teamA}`;
+          championEl.innerHTML = `<img src="${flagMap[teamA]}" style="width: 40px; height: 40px; object-fit: cover; border-radius: 50%; margin-right: 15px; border: 2px solid var(--verde-br);"> 🏆 ${teamA}`;
         } else if (numB > numA) {
-          championEl.innerText = `🏆 ${teamB}`;
+          championEl.innerHTML = `<img src="${flagMap[teamB]}" style="width: 40px; height: 40px; object-fit: cover; border-radius: 50%; margin-right: 15px; border: 2px solid var(--verde-br);"> 🏆 ${teamB}`;
         } else {
           championEl.innerText = "Desempate!";
         }
@@ -287,8 +785,50 @@
       }
     }
 
+    function updateBrazilProgress() {
+        let progress = 0;
+        let text = "Oitavas de Final (0%)";
+
+        const qfTeams = [...document.querySelectorAll('[id^="team-qf"]')].map(el => el.innerText);
+        const sfTeams = [...document.querySelectorAll('[id^="team-sf"]')].map(el => el.innerText);
+        const finalTeams = [...document.querySelectorAll('[id^="team-final"]')].map(el => el.innerText);
+        const champion = document.getElementById('champion').innerText;
+
+        if (champion.includes("BRASIL")) {
+            progress = 100;
+            text = "🏆 HEXACAMPEÃO! (100%)";
+        } else if (finalTeams.includes("BRASIL")) {
+            progress = 75;
+            text = "Na Final! (75%)";
+        } else if (sfTeams.includes("BRASIL")) {
+            progress = 50;
+            text = "Na Semifinal (50%)";
+        } else if (qfTeams.includes("BRASIL")) {
+            progress = 25;
+            text = "Nas Quartas (25%)";
+        }
+
+        if (progress > lastBrazilProgress) {
+            dispararFogos();
+        }
+        
+        lastBrazilProgress = progress;
+
+        const progressBar = document.getElementById('brazil-progress-bar');
+        const progressText = document.getElementById('brazil-progress-text');
+        
+        progressBar.style.width = progress + '%';
+        progressText.innerText = text;
+        
+        if(progress > 40) {
+            progressText.style.textShadow = "1px 1px 2px rgba(0,0,0,0.8)";
+        } else {
+            progressText.style.color = "#333";
+            progressText.style.textShadow = "none";
+        }
+    }
+
     function updateAllMatches() {
-      // Oitavas -> Quartas
       evaluateMatch('m1', 'qf1', 'a');
       evaluateMatch('m2', 'qf1', 'b');
       evaluateMatch('m3', 'qf2', 'a');
@@ -298,21 +838,17 @@
       evaluateMatch('m7', 'qf4', 'a');
       evaluateMatch('m8', 'qf4', 'b');
 
-      // Quartas -> Semis
       evaluateMatch('qf1', 'sf1', 'a');
       evaluateMatch('qf2', 'sf1', 'b');
       evaluateMatch('qf3', 'sf2', 'a');
       evaluateMatch('qf4', 'sf2', 'b');
 
-      // Semis -> Final
       evaluateMatch('sf1', 'final1', 'a');
       evaluateMatch('sf2', 'final1', 'b');
 
-      // Define Campeão
       evaluateChampion();
+      updateBrazilProgress();
     }
   </script>
 </body>
 </html>
-
-```
